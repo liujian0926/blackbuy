@@ -188,13 +188,26 @@ export default {
             hotgoodslist:[]
         }
     },
-    // 发送请求获取数据
-    created() {
-        this.$axios.get(`/site/goods/getgoodsinfo/${this.$route.params.id}`).then(res=>{
+    methods: {
+        getDetail(){
+            this.$axios.get(`/site/goods/getgoodsinfo/${this.$route.params.id}`).then(res=>{
             console.log(res)
             this.goodsinfo = res.data.message.goodsinfo;
             this.hotgoodslist = res.data.message.hotgoodslist;
         })
+        }
+    },
+    // 发送请求获取数据
+    created() {
+        this.getDetail();
+    },
+
+    // 侦听器
+    watch: {
+        // 观察数据的改变
+        $route(value,oldValue){
+            this.getDetail();
+        }
     },
 }
 </script>
