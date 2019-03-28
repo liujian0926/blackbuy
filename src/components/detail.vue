@@ -180,8 +180,10 @@ export default {
             console.log(res)
             this.goodsinfo = res.data.message.goodsinfo;
             this.hotgoodslist = res.data.message.hotgoodslist;
-        })
+            })
         },
+        
+        // 饿了么计数器
         handleChange(value) {
         console.log(value)
       }

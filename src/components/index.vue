@@ -132,31 +132,15 @@
                     </div>
                     <!--幻灯片-->
                     <div class="left-705">
-                        <div class="banner-img">
-                            <div id="focus-box" class="focus-box">
-                                <ul class="slides">
-                                    <li class="" style="width: 100%;height:100%; float: left; margin-right: -100%; position: relative; opacity: 0; display: block; z-index: 1;">
-                                        <a href="/goods.html">
-                                            <img style="width: 100%;height:100%;" src="http://39.108.135.214:8899/imgs/SJ4EgwosX0wTqvyAvhtFGT1w.jpg" draggable="false">
-                                        </a>
-                                    </li>
-                                    <li style="width: 100%;height:100%; float: left; margin-right: -100%; position: relative; opacity: 1; display: block; z-index: 2;" class="flex-active-slide">
-                                        <a href="/goods.html">
-                                            <img style="width: 100%;height:100%;" src="http://39.108.135.214:8899/upload/201504/20/thumb_201504200314272543.jpg" draggable="false">
-                                        </a>
-                                    </li>
-                                </ul>
-                                <ol class="flex-control-nav flex-control-paging">
-                                    <li>
-                                        <a class="">1</a>
-                                    </li>
-                                    <li>
-                                        <a class="flex-active">2</a>
-                                    </li>
-                                </ol>
-                            </div>
-
-                        </div>
+                     <div class="banner-img">
+                    <el-carousel height="341px">
+                        <el-carousel-item  v-for="(item,index) in sliderlist" :key="index">
+                        <router-link :to="'/detail/'+item.id" class='slider-a'>
+                        <img :src="item.img_url" alt="" class='slider-img'>
+                        </router-link>
+                    </el-carousel-item>
+                    </el-carousel>
+                    </div>
                     </div>
                     <!--/幻灯片-->
                     <div class="left-220">
@@ -235,6 +219,7 @@ export default {
             catelist:[],
             // 轮播图数据
             sliderlist:[],
+
             // 热卖数据
             toplist:[],
             // 商品列表数据
@@ -251,7 +236,7 @@ export default {
     created() {
         // 发送请求获取右侧数据
         this.$axios.get('/site/goods/gettopdata/goods').then((res)=>{
-        //    console.log(res);
+           console.log(res);
            this.catelist= res.data.message.catelist
             this.sliderlist=res.data.message.sliderlist
             this.toplist=res.data.message.toplist
@@ -268,5 +253,14 @@ export default {
 </script>
 
 <style>
-    
+    .slider-a{
+        display:block;
+        width:100%;
+        height:100%;
+    }
+    .slider-img{
+        display:block;
+        width:100%;
+        height:100%;
+    }
 </style>
