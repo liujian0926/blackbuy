@@ -242,11 +242,11 @@ export default {
         }
     },
     // 过滤时间
-    filters:{
-    formatTime(value){
-     return moment(value).format('YYY-MM-DD')
-    }
-    },
+    // filters:{
+    // formatTime(value){
+    //  return moment(value).format('YYY-MM-DD')
+    // }
+    // },
     // 实例化vue对象已经完成,参数已经赋值后
     created() {
         // 发送请求获取右侧数据

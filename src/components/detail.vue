@@ -145,94 +145,25 @@
                             <div class="sidebar-box">
                                 <h4>推荐商品</h4>
                                 <ul class="side-img-list">
-                                    <li>
+
+                                    <li v-for = "item in hotgoodslist">
                                         <div class="img-box">
-                                            <a href="#/site/goodsinfo/90" class="">
-                                                <img src="http://39.108.135.214:8899/upload/201504/20/thumb_201504200154277661.jpg">
-                                            </a>
+                                            <router-link :to="'/detail/'+item.id">
+                                            
+                                                <img :src="item.img_url">
+                                           
+                                            </router-link>
                                         </div>
                                         <div class="txt-box">
-                                            <a href="#/site/goodsinfo/90" class="">佳能（Canon） EOS 700D 单反套机</a>
-                                            <span>2015-04-20</span>
+                                            
+                                             <router-link :to="'/detail/'+item.id">
+                                            {{item.title}}
+                                            </router-link>
+                                          
+                                            <span>{{item.add_time | formatTime('YY年MM月DD日')}}</span>
                                         </div>
                                     </li>
-                                    <li>
-                                        <div class="img-box">
-                                            <a href="#/site/goodsinfo/91" class="">
-                                                <img src="http://39.108.135.214:8899/upload/201504/20/thumb_201504200214471783.jpg">
-                                            </a>
-                                        </div>
-                                        <div class="txt-box">
-                                            <a href="#/site/goodsinfo/91" class="">尼康(Nikon)D3300套机（18-55mm f/3.5-5.6G VRII）（黑色）</a>
-                                            <span>2015-04-20</span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="img-box">
-                                            <a href="#/site/goodsinfo/92" class="">
-                                                <img src="http://39.108.135.214:8899/upload/201504/20/thumb_201504200225107390.jpg">
-                                            </a>
-                                        </div>
-                                        <div class="txt-box">
-                                            <a href="#/site/goodsinfo/92" class="">联想（Lenovo） G510AM 15.6英寸笔记本电脑</a>
-                                            <span>2015-04-20</span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="img-box">
-                                            <a href="#/site/goodsinfo/93" class="">
-                                                <img src="http://39.108.135.214:8899/upload/201504/20/201504200341260763.jpg">
-                                            </a>
-                                        </div>
-                                        <div class="txt-box">
-                                            <a href="#/site/goodsinfo/93" class="">Apple iMac MF883CH/A 21.5英寸一体机电脑</a>
-                                            <span>2015-04-20</span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="img-box">
-                                            <a href="#/site/goodsinfo/94" class="">
-                                                <img src="http://39.108.135.214:8899/upload/201504/20/thumb_201504200239192345.jpg">
-                                            </a>
-                                        </div>
-                                        <div class="txt-box">
-                                            <a href="#/site/goodsinfo/94" class="">金士顿（Kingston） DataTraveler SE9 32GB 金属U盘</a>
-                                            <span>2015-04-20</span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="img-box">
-                                            <a href="#/site/goodsinfo/97" class="">
-                                                <img src="http://39.108.135.214:8899/upload/201504/20/thumb_201504200258403759.jpg">
-                                            </a>
-                                        </div>
-                                        <div class="txt-box">
-                                            <a href="#/site/goodsinfo/97" class="">三星（SAMSUNG）UA40HU5920JXXZ 40英寸4K超高清</a>
-                                            <span>2015-04-20</span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="img-box">
-                                            <a href="#/site/goodsinfo/102" class="">
-                                                <img src="http://39.108.135.214:8899/imgs/wTgAWDLpQReTQ-ZOMdlAk4vF.jpg">
-                                            </a>
-                                        </div>
-                                        <div class="txt-box">
-                                            <a href="#/site/goodsinfo/102" class="">Hazzys哈吉斯2017新款男士长袖衬衫纯棉修身英伦衬衫显瘦商务衬衣</a>
-                                            <span>2017-09-13</span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="img-box">
-                                            <a href="#/site/goodsinfo/103" class="">
-                                                <img src="http://39.108.135.214:8899/imgs/SJ4EgwosX0wTqvyAvhtFGT1w.jpg">
-                                            </a>
-                                        </div>
-                                        <div class="txt-box">
-                                            <a href="#/site/goodsinfo/103" class="">骆驼男装2017秋季新款运动休闲纯色夹克青年宽松长袖针织开衫卫衣</a>
-                                            <span>2017-09-26</span>
-                                        </div>
-                                    </li>
+                                    
                                 </ul>
                             </div>
                         </div>
@@ -252,7 +183,9 @@ export default {
             // tab的索引
             index:1,
             // 商品详情信息
-            goodsinfo:{}
+            goodsinfo:{},
+            // 热门商品
+            hotgoodslist:[]
         }
     },
     // 发送请求获取数据
@@ -260,6 +193,7 @@ export default {
         this.$axios.get(`/site/goods/getgoodsinfo/${this.$route.params.id}`).then(res=>{
             console.log(res)
             this.goodsinfo = res.data.message.goodsinfo;
+            this.hotgoodslist = res.data.message.hotgoodslist;
         })
     },
 }

@@ -11,6 +11,18 @@ axios.defaults.baseURL = 'http://111.230.232.110:8899';
 //导入路由
 import VueRouter from 'vue-router';
 Vue.use(VueRouter)
+// 设置全局过滤器
+// 导入comment.js
+import moment from 'moment'
+// 注册
+Vue.filter('formatTime', function (value,template) {
+  // 返回处理后的值
+  if(template){
+    return moment(value).format(template)
+  }else{
+    return moment(value).format('YYY-MM-DD')
+  }
+})
 // 导入首页组件
 import index from './components/index.vue';
 // 导入购物车组件
