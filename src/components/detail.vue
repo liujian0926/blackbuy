@@ -39,23 +39,7 @@
                                     <dl>
                                         <dt>购买数量</dt>
                                         <dd>
-                                            <div class="stock-box">
-                                                <div class="el-input-number el-input-number--small">
-                                                    <span role="button" class="el-input-number__decrease is-disabled">
-                                                        <i class="el-icon-minus"></i>
-                                                    </span>
-                                                    <span role="button" class="el-input-number__increase">
-                                                        <i class="el-icon-plus"></i>
-                                                    </span>
-                                                    <div class="el-input el-input--small">
-                                                        <!---->
-                                                        <input autocomplete="off" size="small" type="text" rows="2" max="60" min="1" validateevent="true" class="el-input__inner" role="spinbutton" aria-valuemax="60" aria-valuemin="1" aria-valuenow="1" aria-disabled="false">
-                                                        <!---->
-                                                        <!---->
-                                                        <!---->
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <el-input-number v-model="num1" @change="handleChange" :min="1" :max="10"></el-input-number>
                                             <span class="stock-txt">
                                                 库存
                                                 <em id="commodityStockNum">{{goodsinfo.stock_quantity}}</em>件
@@ -185,7 +169,9 @@ export default {
             // 商品详情信息
             goodsinfo:{},
             // 热门商品
-            hotgoodslist:[]
+            hotgoodslist:[],
+            // 计数器
+            num1:1
         }
     },
     methods: {
@@ -195,7 +181,10 @@ export default {
             this.goodsinfo = res.data.message.goodsinfo;
             this.hotgoodslist = res.data.message.hotgoodslist;
         })
-        }
+        },
+        handleChange(value) {
+        console.log(value)
+      }
     },
     // 发送请求获取数据
     created() {
