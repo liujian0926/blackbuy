@@ -13,7 +13,18 @@
                 <div class="wrap-box">
                     <div class="left-925">
                         <div class="goods-box clearfix">
-                            <div class="pic-box"></div>
+
+
+                            <div class="pic-box">
+                            
+                            <el-carousel>
+                             <el-carousel-item v-for="(item,index) in imglist" :key="index">
+                               <img :src="item.thumb_path" alt="">
+                             </el-carousel-item>
+                            </el-carousel>
+                            </div>
+
+
                             <div class="goods-spec">
                                 <h1>{{goodsinfo.title}}</h1>
                                 <p class="subtitle">{{goodsinfo.sub_title}}</p>
@@ -77,48 +88,54 @@
                                         </div>
                                         <div class="conn-box">
                                             <div class="editor">
-                                                <textarea id="txtContent" name="txtContent" sucmsg=" " datatype="*10-1000" nullmsg="请填写评论内容！"></textarea>
+                                                <textarea
+                                                id="txtContent"
+                                                name="txtContent" sucmsg=" " 
+                                                datatype="*10-1000" 
+                                                nullmsg="请填写评论内容！"
+                                                v-model = "comment"
+                                                ></textarea>
                                                 <span class="Validform_checktip"></span>
                                             </div>
                                             <div class="subcon">
-                                                <input id="btnSubmit" name="submit" type="submit" value="提交评论" class="submit">
+                                                <input 
+                                                id="btnSubmit" 
+                                                name="submit" 
+                                                type="submit" 
+                                                value="提交评论"
+                                                class="submit"
+                                                @click.trim = "postComment"
+                                                 >
                                                 <span class="Validform_checktip"></span>
                                             </div>
                                         </div>
                                     </div>
                                     <ul id="commentList" class="list-box">
                                         <p style="margin: 5px 0px 15px 69px; line-height: 42px; text-align: center; border: 1px solid rgb(247, 247, 247);">暂无评论，快来抢沙发吧！</p>
-                                        <li>
+                                        <li v-for="item in commentList">
                                             <div class="avatar-box">
                                                 <i class="iconfont icon-user-full"></i>
                                             </div>
                                             <div class="inner-box">
                                                 <div class="info">
-                                                    <span>匿名用户</span>
-                                                    <span>2017/10/23 14:58:59</span>
+                                                    <span>{{item.user_name}}</span>
+                                                    <span>{{item.add_time | formatTime('YYY-MM-DDTHH:mm:ss')}}</span>
                                                 </div>
-                                                <p>testtesttest</p>
+                                                <p>{{item.content}}</p>
                                             </div>
                                         </li>
-                                        <li>
-                                            <div class="avatar-box">
-                                                <i class="iconfont icon-user-full"></i>
-                                            </div>
-                                            <div class="inner-box">
-                                                <div class="info">
-                                                    <span>匿名用户</span>
-                                                    <span>2017/10/23 14:59:36</span>
-                                                </div>
-                                                <p>很清晰调动单很清晰调动单</p>
-                                            </div>
-                                        </li>
+                                       
                                     </ul>
                                     <div class="page-box" style="margin: 5px 0px 0px 62px;">
-                                        <div id="pagination" class="digg">
-                                            <span class="disabled">« 上一页</span>
-                                            <span class="current">1</span>
-                                            <span class="disabled">下一页 »</span>
-                                        </div>
+                                       <el-pagination
+                                         @size-change="handleSizeChange"
+                                         @current-change="handleCurrentChange"
+                                         :current-page="pageIndex"
+                                         :page-sizes="[5,10,15,20]"
+                                         :page-size="pageSize"
+                                         layout="total, sizes, prev, pager, next, jumper"
+                                         :total="totalcount">
+                                       </el-pagination>
                                     </div>
                                 </div>
                             </div>
@@ -171,7 +188,19 @@ export default {
             // 热门商品
             hotgoodslist:[],
             // 计数器
-            num1:1
+            num1:1,
+            // 轮播图数组
+            imglist:[],
+            // 评论内容
+            comment:'',
+            // 页码
+            pageIndex:1,
+            // 页容量
+            pageSize:10,
+            //评论数组
+            commentList:[],
+            // 总评论
+            totalcount: 0 
         }
     },
     methods: {
@@ -180,17 +209,60 @@ export default {
             console.log(res)
             this.goodsinfo = res.data.message.goodsinfo;
             this.hotgoodslist = res.data.message.hotgoodslist;
+            this.imglist = res.data.message.imglist
             })
         },
         
         // 饿了么计数器
         handleChange(value) {
         console.log(value)
-      }
+      },
+    //   提交评论
+      postComment(){
+        //非空判断
+        if(this.comment===''){
+            this.$message.error('请输入评论内容')
+        }
+        // 有内容输入,发送请求添加到数据库
+        this.$axios.post(`site/validate/comment/post/goods/${this.$route.params.id}`,{
+            commenttxt:this.comment
+        }).then(res=>{
+            console.log(res)
+            if(res.data.status==0){
+                this.$message.error(res.data.message)
+            }
+            // 清空文本
+            this.comment=''
+            // 提交成功获取评论到页面上,默认第一页
+            this.getComment();
+            pageIndex=1;
+
+        })
+      },
+    //获取评论,渲染页面
+    getComment(){
+        this.$axios.get(`site/comment/getbypage/goods/${this.$route.params.id}?pageIndex=${this.pageIndex}&pageSize=${this.pageSize}`).then(res=>{
+            console.log(res)
+            this.commentList = res.data.message
+            this.totalcount = res.data.totalcount
+
+        })
+    }   
     },
     // 发送请求获取数据
     created() {
         this.getDetail();
+        this.getComment();
+    },
+    // 页容量改变
+    handleSizeChange(size){
+        this.pageSize = size
+        this.getComment()
+    },
+    // 页码改变
+    handleCurrentChange(current){
+        this.pageIndex = current
+        this.getComment()
     },
 
     // 侦听器
@@ -202,3 +274,24 @@ export default {
     },
 }
 </script>
+
+<style>
+.pic-box{
+    width:395px;
+    height:320px;
+}
+.pic-box .el-carousel{
+    width:100%;
+    height:100%;
+}
+.pic-box .el-carousel__container{
+    width:100%;
+    height:100%;
+}
+.pic-box .el-carousel__container img {
+    display:block;
+    width:100%;
+    height:100%;
+}
+
+</style>
